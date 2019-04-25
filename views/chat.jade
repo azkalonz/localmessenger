@@ -1,0 +1,35 @@
+extends chatlayout
+title=title
+  block content
+    div 
+       button#menu-toggle.btn.btn-primary.collapsed.w-100(type='button', data-toggle='collapse') Friends
+       #wrapper
+         #sidebar-wrapper
+           ul#menu.sidebar-nav.nav-pills.nav-stacked
+             - alluser.forEach((e)=>{
+               - if(e.id!=user.id){
+                li
+                  a(href='#{e.id}' class='user' chat-name='#{e.name}')
+                    span.fa-stack.fa-lg.pull-left
+                     img(src='/images/profile.png' style='width:60px;padding: 6px 10px;')
+                    | #{e.name}
+                -}
+             - })
+         #page-content-wrapper
+           .container-fluid.xyz(style='height:100vh;')
+             .row.h-100
+               .w-100
+               - let padding = 40;
+                 div(style='height: 100%;position:relative;').bg-light.w-100
+                   div.h-100.w-100
+                     div.h-100.w-100#chat-container
+                     div(style='position:absolute;left:0;right:0;bottom:0;').w-100#message-area
+                       div.row
+                         div(style='padding: 0 #{padding}px;padding-bottom: #{padding}px').col-md-12.bg-light
+                           div(contenteditable='true' style='border: 1px solid grey;').w-100#message
+                           button.btn.btn-primary.w-100#send Send Message
+
+
+    script.
+      const userID = #{user.id}
+    script(src='/javascripts/chat.js')

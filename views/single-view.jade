@@ -1,0 +1,43 @@
+div(style='overflow-y:auto;overflow-x:hidden;').w-100.h-100.bg-light#message-container
+  div(style='position:absolute;top:0;left:0;right:0;padding:5px 0;text-align:center;').bg-light
+    h5#chatname
+  br
+  br
+  style.
+    .msg {padding:10px;margin:2px 0;border-radius: 8px;max-width:100%;color:#fff;}
+    .msg-cont {justify-content:flex-end;margin:0!important;}
+    .rec-name {color: #808080;font-size: 0.8em;}
+  - messages.forEach((e)=>{
+    -if(e.receiver_id==user.receiver)
+      div.msg-cont.w-100.row
+        div.msg.bg-dark=e.content
+    -else
+      div(style='justify-content:left').msg-cont.w-100.row
+        div.w-100.rec-name receiver_name
+        div.msg.bg-dark=e.content
+  - })
+script.
+  $('#message-container').css('padding','1em');
+  $('#message-container').css('padding-bottom',($('#message-area').height()+10)+'px');
+  $('a[chat-name]').each(function(){
+    if($(this).attr('href')=='#{user.receiver}'){
+      $('#chatname').html($(this).text());
+      $('.rec-name').text($(this).text());
+    }
+  })
+  $('#message-container').attr('active','#{user.receiver}');
+  $('#send').click(function(){
+    if($('#message').text().length==0){return;}
+    let msgInfo = {
+       message: $('#message').text(),
+       receiver_id: '#{user.receiver}',
+       sender_id: '#{user.user}',
+       socket_id: socket.id
+    }
+    $('#message-container').html($('#message-container').html()+
+    '<div class="msg-cont w-100 row">'+
+    '<div class="msg bg-dark">'+msgInfo.message+'</div></div>');
+    socket.emit('send message',msgInfo);
+    $('#message-container').scrollTop(99999999999999999);
+    $('#message').text('');
+  })

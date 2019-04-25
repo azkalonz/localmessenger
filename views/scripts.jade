@@ -1,0 +1,27 @@
+script(type='text/javascript' src='/javascripts/bootstrap.js')
+script(type='text/javascript').
+  $('.nav-link').each(function(){
+    if($(this).text()=="#{title}")
+      $(this).addClass('active');
+  })
+  $("#menu-toggle").click(function(e) {
+   e.preventDefault();
+   $("#wrapper").toggleClass("toggled");
+  });
+  $("#menu-toggle-2").click(function(e) {
+     e.preventDefault();
+     $("#wrapper").toggleClass("toggled-2");
+     $('#menu ul').hide();
+  });
+  function initMenu() {
+     $('#menu li a').click(
+       function(){
+         $('#menu li').removeClass('active');
+         $(this).parent().addClass('active');
+       }
+     );
+     $('a[chat-name]').click()
+  }
+  $(document).ready(function() {
+     initMenu();
+  });

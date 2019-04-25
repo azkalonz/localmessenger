@@ -1,0 +1,11 @@
+div.row.mb-4
+  nav(style='width:100%;').navbar.bg-light.navbar-expand-lg.navbar-light
+    ul.navbar-nav
+      li.nav-item
+        a(href='/').nav-link Home
+      li.nav-item
+        a(href='/login').nav-link Login
+      if isLoggedIn
+        li.nav-item
+          a(href='/chat').nav-link Chat
+      

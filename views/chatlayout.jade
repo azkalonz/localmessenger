@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    script(src='/socket.io/socket.io.js')
+    script(type='text/javascript' src='/javascripts/jquery-3.4.0.min.js')
+  body(style='overflow:hidden;')
+    block content
+    include scripts

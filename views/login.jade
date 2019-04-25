@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  div.mx-auto.col-md-6.bg-light.p-4
+    form(method='post' action='/login')
+      div.form-group
+        label(for='username') Username
+        input(type='text' name='username' placeholder='Username').form-control#username
+        label(for='password') Password
+        input(type='password' name='password' placeholder='Password').form-control#password
+        <br/>
+        input(type='submit' value='Login').btn.btn-primary.w-100

@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  if isLoggedIn
+    b Welcome back, #{user.username}!
+  form(action='/submit' method='post')
+    input(type='submit' value='login')
