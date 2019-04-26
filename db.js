@@ -5,7 +5,8 @@ module.exports = {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database: process.env.DB_NAME
+      database: process.env.DB_NAME,
+      charset : 'utf8mb4'
     }),
   getAllUsers : function(callback,db) {
     let result = [];
@@ -18,7 +19,7 @@ module.exports = {
     })
   },
   sendMessage : function(callback,data,db) {
-    db.query(`INSERT INTO messages SET receiver_id = ${data.receiver_id}, sender_id = ${data.sender_id}, content = '${data.message}'`, (err, res)=>{
+    db.query(`INSERT INTO messages SET receiver_id = ${data.receiver_id}, sender_id = ${data.sender_id}, content = '${data.message}', _time = '${data.time}'`, (err, res)=>{
       if(err) callback(err,null);
       else callback(null,'Success');
     })
@@ -37,6 +38,19 @@ module.exports = {
         result.push(res[i]);
       }
       callback(result);
+    })
+  },
+  updateLastLogin : function(callback,id,db) {
+    let date = new Date();
+    db.query(`UPDATE user SET last_login = '${date}' WHERE id = ${id}`, (err,res)=>{
+      if(err) callback(err,null);
+      else callback(null,'Last login saved.');
+    })
+  },
+  getLastLogin : function(callback,id,db) {
+    if(typeof(id)=='undefined'){return callback(null);}
+    db.query(`SELECT last_login FROM user WHERE id = ${id}`, (err,res)=>{
+      callback(res[0]);
     })
   }
 }

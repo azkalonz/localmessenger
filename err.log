@@ -1,0 +1,11 @@
+Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    at ServerResponse.setHeader (_http_outgoing.js:470:11)
+    at ServerResponse.header (E:\localmessenger\app\node_modules\express\lib\response.js:767:10)
+    at ServerResponse.send (E:\localmessenger\app\node_modules\express\lib\response.js:170:12)
+    at done (E:\localmessenger\app\node_modules\express\lib\response.js:1004:10)
+    at Object.exports.renderFile (E:\localmessenger\app\node_modules\jade\lib\index.js:374:12)
+    at View.exports.__express [as engine] (E:\localmessenger\app\node_modules\jade\lib\index.js:417:11)
+    at View.render (E:\localmessenger\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (E:\localmessenger\app\node_modules\express\lib\application.js:640:10)
+    at Function.render (E:\localmessenger\app\node_modules\express\lib\application.js:592:3)
+    at ServerResponse.render (E:\localmessenger\app\node_modules\express\lib\response.js:1008:7)

@@ -1,11 +1,12 @@
-div.row.mb-4
-  nav(style='width:100%;').navbar.bg-light.navbar-expand-lg.navbar-light
-    ul.navbar-nav
-      li.nav-item
-        a(href='/').nav-link Home
-      li.nav-item
-        a(href='/login').nav-link Login
+nav.navbar.navbar-expand-lg.navbar-light.bg-light
+  a.navbar-brand(href='#') WEBCHAT
+  button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavAltMarkup', aria-controls='navbarNavAltMarkup', aria-expanded='false', aria-label='Toggle navigation')
+    span.navbar-toggler-icon
+  #navbarNavAltMarkup.collapse.navbar-collapse
+    .navbar-nav
+      a.nav-item.nav-link(href='/') Home
       if isLoggedIn
-        li.nav-item
-          a(href='/chat').nav-link Chat
-      
+        a.nav-item.nav-link(href='/chat') Chat
+        a.nav-item.nav-link(href='/logout') Logout
+      else
+        a.nav-item.nav-link(href='/login') Login

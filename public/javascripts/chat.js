@@ -1,28 +1,32 @@
 const users = $('.user');
 const chatContainer = $('#chat-container');
-const socket = io();
 users.click(function(e){
   e.preventDefault();
   let name = $(this).attr('chat-name').replace(' ','_');
   let id = $(this).attr('href');
-  chatContainer.load(`/single-view?receiver=${id}`,()=>{
+  chatContainer.load(`/single-view/${id}`,()=>{
+    var that = $(this);
     $('#message-container').scrollTop(99999999999999999)
+    setTimeout(function(){
+      if(that.css('color')=='rgb(255, 255, 255)'){
+        $('#online').parent().hide().slideDown();
+        $('#online').html(`
+        <div class="alert alert-success" role="alert">
+        <strong>Connected</strong>
+        </div>`);
+        $('#online').parent().delay(2500).slideUp();
+      } else {
+        $('#online').html(`
+        <div class="alert alert-info" role="alert">
+        <strong>Offline!</strong>
+        </div>`);
+      }
+    },1000);
+    if($('.active').children(0).css('color')!='rgb(255, 255, 255)'){
+      timeInterval();
+    } else {
+      $('#isactive').text('');
+    }
   });
 })
 $('#message-container').attr('active','#{user.receiver}');
-socket.on('connect',()=>{
-  let me = [userID, socket.id];
-  socket.emit('sockets',me)
-  console.log('connected');
-  socket.on('message', (data)=>{
-    console.log(data);
-    if($('#message-container').attr('active')==data){
-      chatContainer.load(`/single-view?receiver=${data}`,()=>{
-        $('#message-container').scrollTop(99999999999999999)
-      });
-    }
-  })
-});
-socket.on('disconnect',()=>{
-  socket.emit('socket disconnect', userID);
-})

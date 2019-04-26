@@ -1,7 +1,22 @@
 extends layout
 
 block content
-  if isLoggedIn
-    b Welcome back, #{user.username}!
-  form(action='/submit' method='post')
-    input(type='submit' value='login')
+  div
+    if isLoggedIn
+      h2.p-4 Welcome back, 
+        a(style='white-space: nowrap;') #{user.name}!
+    section#statistic.statistic-section.one-page-section
+      .container
+        .row.text-center
+          .col-xs-12.col-md-3
+            .counter
+              i.fa.fa-coffee.fa-2x.stats-icon
+              h2.timer.count-title.count-number#online-user
+                | 0
+              .stats-line-black
+              p.stats-text Online Users
+    script.
+      socket.emit('count')
+      socket.on('count users', (data)=>{
+        $('#online-user').html(Object.keys(data).length);
+      })

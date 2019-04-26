@@ -1,43 +1,99 @@
 div(style='overflow-y:auto;overflow-x:hidden;').w-100.h-100.bg-light#message-container
-  div(style='position:absolute;top:0;left:0;right:0;padding:5px 0;text-align:center;').bg-light
-    h5#chatname
+  div(style='position:absolute;top:0;left:0;right:0;text-align:center;').bg-light
+    span(style='color:#838383;')#online
   br
   br
   style.
-    .msg {padding:10px;margin:2px 0;border-radius: 8px;max-width:100%;color:#fff;}
+    .msg {padding: 4px 10px;margin:2px 0;border-radius: 8px;max-width:100%;color:#fff;background:#d6d6d6;color:#000;word-break:break-all;}
     .msg-cont {justify-content:flex-end;margin:0!important;}
     .rec-name {color: #808080;font-size: 0.8em;}
+    .time {color: #808080;font-size: 0.7em;}
+    .alert {margin-bottom: 0!important;}
+  - var size = Object.keys(messages).length;
+  - var c = 0;
   - messages.forEach((e)=>{
+    -c++;
     -if(e.receiver_id==user.receiver)
       div.msg-cont.w-100.row
-        div.msg.bg-dark=e.content
+        div(style='background-color: #d6d6d6;color: #000;word-break:break-all;').msg !{e.content}
     -else
-      div(style='justify-content:left').msg-cont.w-100.row
-        div.w-100.rec-name receiver_name
-        div.msg.bg-dark=e.content
+      div(style='display:flex;justify-content:flex-start;align-items: center;')
+        img(src='/images/profile.png' width='40' style='margin-right:5px;')
+        div(style='justify-content:flex-start;word-break:break-all;').msg-cont.w-100.row
+          - if(c==size)
+            div.w-100.time=e._time
+          - else
+            div(style='display:none;').w-100.time=e._time
+          div(style='background-color: #1e88e5;color: #fff;word-break:break-all;').msg !{e.content}
+          div.w-100.rec-name receiver_name
   - })
-script.
-  $('#message-container').css('padding','1em');
-  $('#message-container').css('padding-bottom',($('#message-area').height()+10)+'px');
-  $('a[chat-name]').each(function(){
-    if($(this).attr('href')=='#{user.receiver}'){
-      $('#chatname').html($(this).text());
-      $('.rec-name').text($(this).text());
+  script.
+    $('.msg-cont').click(function(){
+      $('.time').toggle();
+    })
+    $('#message-container').css('padding','1em');
+    $('#message-container').css('padding-bottom',($('#message-area').height()+10)+'px');
+    $('a[chat-name]').each(function(){
+      if($(this).attr('href')=='#{user.receiver}'){
+        $('#chatname').html($(this).text());
+        $('.rec-name').text($(this).text());
+      }
+    })
+    id2 = #{user.receiver};
+    $('#message-container').attr('active','#{user.receiver}');
+    $('#send').click(function(e){
+      e.preventDefault();
+      var msg = $('#message').html().replace(/<(?!br\s*\/?)[^>]+>/g, '');
+      msg = msg.trim();
+      if((/^(<br>)+/g).test(msg) || (/^(&nbsp;)+/).test(msg)){
+        msg = msg.replace(/&nbsp;/g,'');
+        msg = msg.replace(/\s*(<br>\s*)+/g, "<br />").replace(/^<br \/>|<br \/>$/g, "");
+      }
+      console.log(msg);
+      if(msg.length==0){
+        $('#message').html('');return;}
+      let msgInfo = {
+         message: msg,
+         receiver_id: id2,
+         sender_id: '#{user.user}',
+         socket_id: socket.id
+      }
+      socket.emit('send message',msgInfo);
+      $('#message-container').html($('#message-container').html()+
+      '<div class="msg-cont w-100 row">'+
+      '<div class="msg">'+msg+'</div></div>');
+      $('#message-container').scrollTop(99999999999999999);
+      $('#message').text('');
+    })
+    $('#message').on('focus',function(){
+      if($(this).attr('active')){
+        $(this).attr('active',false)
+        $(this).html('');
+      };
+    })
+    $('#message').on('keyup', function(evt){
+      if(evt.keyCode == 13 && !evt.shiftKey)
+        $('#send').click();
+    });
+    $('#message').on('blur',function(){
+      if($(this).html().length>0){return;}
+      $(this).html('Send a message');
+      $(this).attr('active',true)
+    })
+    function timeInterval(){
+      let today = new Date();
+      let lasttime = '#{lastLogin}';
+      let lastLogin = new Date(Date.parse(lasttime));
+      let t = (today.getTime() - lastLogin.getTime());
+      if(t/1000<60){ // show in seconds
+        t = Math.floor(t/1000)+'s';}
+      else if(t/60000>=1 && t/60000<60){ // show in minutes
+        t = Math.floor(t/60000)+'mins';}
+      else if(t/3600000>=1){ // show in hours
+        t = Math.floor(t/3600000)+'hrs';}
+      t += ' ago';
+      $('#time_interval').text(t);
+      if($('#time_interval').text().indexOf('NaN')>=0){
+        $('#time_interval').text('now');
+      }
     }
-  })
-  $('#message-container').attr('active','#{user.receiver}');
-  $('#send').click(function(){
-    if($('#message').text().length==0){return;}
-    let msgInfo = {
-       message: $('#message').text(),
-       receiver_id: '#{user.receiver}',
-       sender_id: '#{user.user}',
-       socket_id: socket.id
-    }
-    $('#message-container').html($('#message-container').html()+
-    '<div class="msg-cont w-100 row">'+
-    '<div class="msg bg-dark">'+msgInfo.message+'</div></div>');
-    socket.emit('send message',msgInfo);
-    $('#message-container').scrollTop(99999999999999999);
-    $('#message').text('');
-  })
